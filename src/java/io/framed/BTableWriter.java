@@ -14,10 +14,10 @@ public class BTableWriter {
 
     private static final Double toDouble(Object o)
     throws IllegalArgumentException {
-        if (o instanceof Long) {
+        if (o instanceof Double) {
+          return (Double) o;
+        } else if (o instanceof Long) {
             return ((Long) o).doubleValue();
-        } else if (o instanceof Double) {
-            return (Double) o;
         } else {
             throw new IllegalArgumentException(
                 "Invalid input to toDouble: " + o.getClass().getName());
@@ -39,7 +39,6 @@ public class BTableWriter {
         }
         return count;
     }
-
 
     // Write a single row directly to a FileChannel, prefixed with the number
     // of materialized values and pessimistically allocating for worse-case
@@ -63,7 +62,6 @@ public class BTableWriter {
         buf.flip();
         while(buf.hasRemaining()) { chan.write(buf); }
     }
-
 
     public static final File write(File dest, String header,
                                    Iterable< Iterable<Object> > rows)
@@ -89,4 +87,5 @@ public class BTableWriter {
         chan.close();
         return dest;
     }
+
 }
