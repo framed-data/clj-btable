@@ -38,7 +38,7 @@
 
 (def version 0)
 
-(def sep (char 31)) ; ASCII unit separator
+(def sep BTableWriter/SEP)
 (def sep-re (re-pattern (str sep)))
 
 (defn- sanitize-label [s]
