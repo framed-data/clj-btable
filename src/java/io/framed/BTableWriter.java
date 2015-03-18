@@ -11,77 +11,55 @@ import java.nio.ByteBuffer;
 public class BTableWriter {
 
     public static int VERSION = 0;
+    public static String SEP = String.valueOf((char) 31); // ASCII unit sep
 
-    private static final Double toDouble(Object o)
-    throws IllegalArgumentException {
-        if (o instanceof Double) {
-          return (Double) o;
-        } else if (o instanceof Long) {
-            return ((Long) o).doubleValue();
-        } else {
-            throw new IllegalArgumentException(
-                "Invalid input to toDouble: " + o.getClass().getName());
-        }
-    }
-
-    private static ArrayList<Double> iter2Doubles(Iterable<Object> iter) {
-        ArrayList<Double> ds = new ArrayList<Double>();
-        for(Object o : iter) {
-            ds.add(toDouble(o));
-        }
-        return ds;
-    }
-
-    private static final int numValues(ArrayList<Double> ds) {
+    private static final int numValues(Iterable<Object> row) {
         int count = 0;
-        for(Double d : ds) {
-          if(d != 0.0) { count++; }
+        for (Object o : row) {
+          if (((double) o) != 0.0) { count++; }
         }
         return count;
-    }
-
-    // Write a single row directly to a FileChannel, prefixed with the number
-    // of materialized values and pessimistically allocating for worse-case
-    // dense rows
-    private static final void chanWriteRow(FileChannel chan, Iterable<Object> row)
-    throws IOException {
-        ArrayList<Double> rowVals = iter2Doubles(row);
-        ByteBuffer buf = ByteBuffer.allocate(4 + (8 * rowVals.size()));
-        buf.clear();
-        buf.putInt(numValues(rowVals));
-
-        int idx = 0;
-        for(Double d : rowVals) {
-            if (d != 0.0) {
-                buf.putInt(idx);
-                buf.putDouble(d);
-            }
-            idx++;
-        }
-
-        buf.flip();
-        while(buf.hasRemaining()) { chan.write(buf); }
     }
 
     public static final File write(File dest, String header,
                                    Iterable< Iterable<Object> > rows)
     throws IllegalArgumentException, IOException {
         FileChannel chan = new RandomAccessFile(dest, "rw").getChannel();
+        ByteBuffer buf;
 
-        // Write version + labels
-        ByteBuffer buf = ByteBuffer.allocate(4 + 4 + (2 * header.length()));
+        // Write version + labels w/ len prefix
+        buf = ByteBuffer.allocate(4 + 4 + (2 * header.length()));
         buf.clear();
         buf.putInt(VERSION);
         buf.putInt(header.length());
-        for (int i=0; i<header.length(); i++){
+        for (int i = 0; i < header.length(); i++){
             buf.putChar(header.charAt(i));
         }
         buf.flip();
-        while(buf.hasRemaining()) { chan.write(buf); }
+        while (buf.hasRemaining()) { chan.write(buf); }
 
         // Write rows
-        for(Iterable<Object> row : rows) {
-            chanWriteRow(chan, row);
+        // Each row is prefixed for number of materialized values +
+        // pessimistically allocated for worst-case dense row
+        int ncols = header.split(SEP).length;
+        buf = ByteBuffer.allocate(4 + (8 * ncols));
+
+        for (Iterable<Object> row : rows) {
+            buf.clear();
+            buf.putInt(numValues(row));
+
+            int idx = 0;
+            for(Object o : row) {
+                Double d = (double) o;
+                if (d != 0.0) {
+                    buf.putInt(idx);
+                    buf.putDouble(d);
+                }
+                idx++;
+            }
+
+            buf.flip();
+            while(buf.hasRemaining()) { chan.write(buf); }
         }
 
         chan.close();
