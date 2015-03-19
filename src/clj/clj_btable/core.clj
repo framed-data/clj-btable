@@ -41,13 +41,9 @@
 (def sep BTableWriter/SEP)
 (def sep-re (re-pattern (str sep)))
 
-(defn- sanitize-label [s]
-  (string/replace s #"(\n|\r)" ""))
-
 (defn write [x labels rows]
   (let [f (io/file x)
-        labels' (->> (map sanitize-label labels)
-                     (string/join sep))]
+        labels' (string/join sep labels)]
     (BTableWriter/write f labels' rows)))
 
 ;;
