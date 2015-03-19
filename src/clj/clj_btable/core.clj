@@ -4,7 +4,7 @@
    more space-efficient than CSVs for sparse datasets, as well as
    faster to read and write.
 
-   btables store their labels as a comma-separated string, and encode
+   btables store their labels internally as a delimited string, and encode
    the row index/value of each nonzero cell.
 
    btables are *not* a drop-in replacement for all datasets stored as CSV:
@@ -38,13 +38,12 @@
 
 (def version 0)
 
-(defn- sanitize-label [s]
-  (string/replace s #"(,|\n|\r)" ";"))
+(def sep BTableWriter/SEP)
+(def sep-re (re-pattern (str sep)))
 
 (defn write [x labels rows]
   (let [f (io/file x)
-        labels' (->> (map sanitize-label labels)
-                     (string/join ","))]
+        labels' (string/join sep labels)]
     (BTableWriter/write f labels' rows)))
 
 ;;
@@ -75,7 +74,7 @@
   [is]
   (let [labels-len (.readInt is)]
     (-> (read-str is labels-len)
-        (string/split #","))))
+        (string/split sep-re))))
 
 (defn labels
   "Read a sequence of labels from a table on disk
@@ -91,7 +90,7 @@
 
    Ex:
        (materialize 10 [[2 47] [5 62] [8 94]])
-       [0 0 47 0 0 62 0 0 94 0]"
+       [0.0 0.0 47 0.0 0.0 62 0.0 0.0 94 0.0]"
   [n indices]
   (let [index-map (into {} indices)]
     (mapv #(get index-map % 0.0) (range n))))
