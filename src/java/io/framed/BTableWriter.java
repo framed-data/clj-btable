@@ -36,7 +36,9 @@ public class BTableWriter {
             buf.putChar(header.charAt(i));
         }
         buf.flip();
-        while (buf.hasRemaining()) { chan.write(buf); }
+        while (buf.hasRemaining()) {
+            chan.write(buf);
+        }
 
         // Write rows
         // Each row is prefixed for number of materialized values +
@@ -59,7 +61,9 @@ public class BTableWriter {
             }
 
             buf.flip();
-            while(buf.hasRemaining()) { chan.write(buf); }
+            while (buf.hasRemaining()) {
+                chan.write(buf);
+            }
         }
 
         chan.close();
