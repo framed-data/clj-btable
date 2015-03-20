@@ -1,36 +1,4 @@
 (ns clj-btable.core
-  "A binary serialization format for sparse, labeled two-dimensional
-   numeric datasets ('binary tables'). btables are significantly
-   more space-efficient than CSVs for sparse datasets, as well as
-   faster to read and write.
-
-   btables store their labels internally as a delimited string, and encode
-   the row index/value of each nonzero cell.
-
-   btables are *not* a drop-in replacement for all datasets stored as CSV:
-   the increases in efficiency is proportional to the sparsity of the
-   dataset. For a pathological fully-nonzero dataset, the space occupied
-   can be much larger than a CSV!
-
-   Disk file format:
-     - Integer format version (4 bytes)
-     - Integer character count of labels string, including separating commas (4 bytes)
-     - Label string as sequence of 2-byte UTF-16 characters, comma separated
-     Then, for each row:
-       - Integer number of nonzero values in row (4 bytes)
-       - Sequential 'pairs' of index/value for each nonzero cell
-         (4 bytes integer index, 8 byte double value)
-
-   All numeric values are written big-endian.
-
-   An example row sequence of:
-
-     [[38 0 0 47 0]
-      [0 63 79 0 0]]
-
-   would be written to disk as:
-
-     2 0 38 3 47 2 1 63 2 79"
   (:require [clojure.java.io :as io]
             [clojure.string :as string])
   (import (java.io DataInputStream EOFException)
