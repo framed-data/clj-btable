@@ -44,7 +44,7 @@ public class BTableWriter {
         // Each row is prefixed for number of materialized values +
         // pessimistically allocated for worst-case dense row
         int ncols = header.split(SEP).length;
-        buf = ByteBuffer.allocate(4 + (8 * ncols));
+        buf = ByteBuffer.allocate(4 + (4 * ncols) + (8 * ncols));
 
         for (Iterable<Object> row : rows) {
             buf.clear();
