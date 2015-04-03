@@ -1,4 +1,4 @@
-(defproject io.framed/clj-btable "0.1.0"
+(defproject io.framed/clj-btable "0.1.1"
   :description
   "A binary serialization format for sparse, labeled 2D numeric datasets"
   :url "https://github.com/framed-data/clj-btable"
