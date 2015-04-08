@@ -51,7 +51,7 @@ public class BTableWriter {
             buf.putInt(numValues(row));
 
             int idx = 0;
-            for(Double d : row) {
+            for (Double d : row) {
                 if (d != 0.0) {
                     buf.putInt(idx);
                     buf.putDouble(d);

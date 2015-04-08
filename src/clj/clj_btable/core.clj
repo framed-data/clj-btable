@@ -57,8 +57,8 @@
    and sequence of [index,value] pairs
 
    Ex:
-       (materialize 10 [[2 47] [5 62] [8 94]])
-       [0.0 0.0 47 0.0 0.0 62 0.0 0.0 94 0.0]"
+     (materialize 10 [[2 47] [5 62] [8 94]])
+     [0.0 0.0 47 0.0 0.0 62 0.0 0.0 94 0.0]"
   [n indices]
   (let [index-map (into {} indices)]
     (mapv #(get index-map % 0.0) (range n))))
