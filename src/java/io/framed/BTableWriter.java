@@ -13,16 +13,16 @@ public class BTableWriter {
     public static int VERSION = 0;
     public static String SEP = String.valueOf((char) 31); // ASCII unit sep
 
-    private static final int numValues(Iterable<Object> row) {
+    private static final int numValues(Iterable<Double> row) {
         int count = 0;
-        for (Object o : row) {
-          if (((double) o) != 0.0) { count++; }
+        for (Double d : row) {
+          if (d != 0.0) { count++; }
         }
         return count;
     }
 
     public static final File write(File dest, String header,
-                                   Iterable< Iterable<Object> > rows)
+                                   Iterable< Iterable<Double> > rows)
     throws IllegalArgumentException, IOException {
         FileChannel chan = new RandomAccessFile(dest, "rw").getChannel();
         ByteBuffer buf;
@@ -46,13 +46,12 @@ public class BTableWriter {
         int ncols = header.split(SEP).length;
         buf = ByteBuffer.allocate(4 + (4 * ncols) + (8 * ncols));
 
-        for (Iterable<Object> row : rows) {
+        for (Iterable<Double> row : rows) {
             buf.clear();
             buf.putInt(numValues(row));
 
             int idx = 0;
-            for(Object o : row) {
-                Double d = (double) o;
+            for (Double d : row) {
                 if (d != 0.0) {
                     buf.putInt(idx);
                     buf.putDouble(d);
