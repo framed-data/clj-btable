@@ -38,6 +38,8 @@ For a pathological fully-nonzero dataset, the space occupied can be much larger 
   )
 ```
 
+Also see [the documentation](http://framed-data.github.io/clj-btable).
+
 ### Disk format
 
 See [the wiki](https://github.com/framed-data/clj-btable/wiki/Disk-Format) for a detailed description of the representation on disk.
