@@ -1,11 +1,7 @@
 (ns clj-btable.core-test
   (:require [clojure.test :refer :all]
+            [framed.std.io :as std.io]
             [clj-btable.core :as btable]))
-
-(defn ->tempfile []
-  (let [file (java.io.File/createTempFile "clj-btable" ".tmp")]
-    (.deleteOnExit file)
-    file))
 
 (deftest test-materialize
   (let [n 10
@@ -18,6 +14,6 @@
         rows  [[22.2 0.0 0.0 47.0]
                [0.0 38.0 57.3 0.0]
                [84.99 92.0 0.0 0.0]]
-        table (btable/write (->tempfile) labels rows)]
+        table (btable/write (std.io/tempfile) labels rows)]
     (is (= labels (btable/labels table)))
     (is (= rows (btable/rows table)))))
