@@ -8,4 +8,5 @@
                  [io.framed/std "0.1.2"]]
   :source-paths ["src/clj"]
   :java-source-paths ["src/java"]
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}}
+  :plugins [[codox "0.8.13"]])

@@ -5,10 +5,7 @@
   (import java.io.EOFException
           io.framed.BTableWriter))
 
-(def version
-  "The current format version, used as as preamble for each file"
-  0)
-
+(def ^:no-doc version 0)
 (def ^:no-doc sep BTableWriter/SEP)
 (def ^:no-doc sep-re (re-pattern (str sep)))
 
@@ -55,6 +52,7 @@
 
 (defn labels
   "Read a sequence of labels from a table on disk
+   as a vector of strings
    x - coercible to clojure.java.io/input-stream"
   [x]
   (with-open [istream (std.io/data-input-stream x)]
