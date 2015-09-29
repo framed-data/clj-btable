@@ -47,5 +47,5 @@ See [the wiki](https://github.com/framed-data/clj-btable/wiki/Disk-Format) for a
 
 ### Performance
 
-An optimized Java backend using NIO can write a table of 50,000 rows, each with 500 columns (25 million cells) in just under 8 seconds.
-The same table can be read/traversed in ~3s.
+An optimized Java backend using NIO can write a table of 50,000 rows, each with 500 columns (25 million cells) in just under 6 seconds.
+The same table can be read/traversed in ~7s.
